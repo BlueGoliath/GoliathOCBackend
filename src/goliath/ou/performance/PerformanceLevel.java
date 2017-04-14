@@ -1,7 +1,7 @@
-/*
+/* 
  * The MIT License
  *
- * Copyright 2017 ty.
+ * Copyright 2017 Ty Young.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,105 +29,94 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- *
- * @author ty
+ * Class for representing Nvidia PowerMizer performance levels.
+ * @author Ty Young
  */
 public class PerformanceLevel
 {
-    private StringProperty name;
-    private IntegerProperty minGraphicsClock;
-    private IntegerProperty maxGraphicsClock;
-    private IntegerProperty minMemoryClock;
-    private IntegerProperty maxMemoryClock;
-    private IntegerProperty minVoltage;
-    private IntegerProperty maxVolage;
+    private final StringProperty name;
+    private final IntegerProperty minCore;
+    private final IntegerProperty maxCore;
+    private final IntegerProperty minMemory;
+    private final IntegerProperty maxMemory;
     
     public PerformanceLevel()
     {
-        this.maxVolage = new SimpleIntegerProperty();
-        this.minVoltage = new SimpleIntegerProperty();
-        this.maxMemoryClock = new SimpleIntegerProperty();
-        this.minMemoryClock = new SimpleIntegerProperty();
-        this.maxGraphicsClock = new SimpleIntegerProperty();
-        this.minGraphicsClock = new SimpleIntegerProperty();
-        this.name = new SimpleStringProperty();
+        maxMemory = new SimpleIntegerProperty();
+        minMemory = new SimpleIntegerProperty();
+        maxCore = new SimpleIntegerProperty();
+        minCore = new SimpleIntegerProperty();
+        name = new SimpleStringProperty();
         
-        name.set("Undefined!");
-        minGraphicsClock.set(0);
-        maxGraphicsClock.set(0);
-        minMemoryClock.set(0);
-        maxMemoryClock.set(0);
+        name.set(null);
+        minCore.set(0);
+        maxCore.set(0);
+        minMemory.set(0);
+        maxMemory.set(0);
     }
+
     public PerformanceLevel(String perfName)
     {
-        this.maxVolage = new SimpleIntegerProperty();
-        this.minVoltage = new SimpleIntegerProperty();
-        this.maxMemoryClock = new SimpleIntegerProperty();
-        this.minMemoryClock = new SimpleIntegerProperty();
-        this.maxGraphicsClock = new SimpleIntegerProperty();
-        this.minGraphicsClock = new SimpleIntegerProperty();
-        this.name = new SimpleStringProperty();
+        maxCore = new SimpleIntegerProperty();
+        minCore = new SimpleIntegerProperty();
+        maxMemory = new SimpleIntegerProperty();
+        minMemory = new SimpleIntegerProperty();
+        name = new SimpleStringProperty();
+        
         name.set(perfName);
-        minGraphicsClock.set(0);
-        maxGraphicsClock.set(0);
-        minMemoryClock.set(0);
-        maxMemoryClock.set(0);
+        minCore.set(0);
+        maxCore.set(0);
+        minMemory.set(0);
+        maxMemory.set(0);
     }
+
     public StringProperty nameProperty()
     {
         return name;
     }
-    public IntegerProperty minClockProperty()
+
+    public IntegerProperty minCoreProperty()
     {
-        return minGraphicsClock;
-    }
-    public IntegerProperty maxClockProperty()
-    {
-        return maxGraphicsClock;
-    }
-    public IntegerProperty minMemoryProperty()
-    {
-        return minMemoryClock;
-    }
-    public IntegerProperty maxMemoryProperty()
-    {
-        return maxMemoryClock;
-    }
-    public IntegerProperty minVoltageProperty()
-    {
-        return minVoltage;
-    }
-    public IntegerProperty maxVoltageProperty()
-    {
-        return maxVolage;
+        return minCore;
     }
 
-    
-    public void setMinVoltage(int min)
+    public IntegerProperty maxCoreProperty()
     {
-        minVoltage.set(min);
+        return maxCore;
     }
+
+    public IntegerProperty minMemoryProperty()
+    {
+        return minMemory;
+    }
+
+    public IntegerProperty maxMemoryProperty()
+    {
+        return maxMemory;
+    }
+
     public void setName(String nm)
     {
         name.set(nm);
     }
-    public void setMaxVolage(int max)
-    {
-        maxVolage.set(max);
+
+    public void setMinCore(int min) {
+        minCore.set(min);
     }
-    public void setMinGraphicsClock(int min) {
-        minGraphicsClock.set(min);
-    }
-    public void setMaxGraphicsClock(int max)
+
+
+    public void setMaxCore(int max)
     {
-        maxGraphicsClock.set(max);
+        maxCore.set(max);
     }
-    public void setMinMemoryClock(int min)
+
+    public void setMinMemory(int min)
     {
-        minMemoryClock.set(min);
+        minMemory.set(min);
     }
-    public void setMaxMemoryClock(int max)
+
+    public void setMaxMemory(int max)
     {
-        maxMemoryClock.set(max);
+        maxMemory.set(max);
     }
 }

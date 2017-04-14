@@ -1,7 +1,7 @@
-/*
+/* 
  * The MIT License
  *
- * Copyright 2017 ty.
+ * Copyright 2017 Ty Young.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package goliath.ou.attribute;
 
 import goliath.io.Terminal;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -50,7 +51,15 @@ public class AttributePusher
         cmd.append(val);
         
         shell.setCommand(cmd.toString());
-        shell.startCommand();
+
+        try
+        {
+            shell.startCommand();
+        }
+        catch (IOException ex)
+        {
+            System.out.println("Failed to push Nvidia attribute " + attr.cmdNameProperty().getValue());
+        }
         
         while(shell.getCommandReader().hasNextLine())
             output.add(shell.getCommandReader().nextLine());
@@ -66,7 +75,15 @@ public class AttributePusher
         cmd.append(val);
         
         shell.setCommand(cmd.toString());
-        shell.startCommand();
+        
+        try
+        {
+            shell.startCommand();
+        }
+        catch (IOException ex)
+        {
+            System.out.println("Failed to push Nvidia attribute " + attr);
+        }
         
         while(shell.getCommandReader().hasNextLine())
             output.add(shell.getCommandReader().nextLine());
