@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Ty Young.
@@ -23,31 +23,44 @@
  */
 package goliath.ou.controller;
 
-import goliath.ou.api.GPUController;
 import goliath.ou.attribute.Attribute;
 import goliath.ou.attribute.AttributePuller;
 import goliath.ou.attribute.AttributePusher;
+import goliath.ou.interfaces.GPUController;
 import java.util.ArrayList;
 
-public class CoreController implements GPUController<Integer>
+/**
+
+ @author Ty Young
+ */
+public class FanModeController implements GPUController<Integer>
 {
+    public static final int DRIVER_CONTROLLED = 0;
+    public static final int MANUALLY_CONTROLLED = 1;
+    
+    private final Attribute attr;
     private final AttributePusher pusher;
     private final AttributePuller puller;
-    private final Attribute attr;
     
-    public CoreController(Attribute attrCore)
+    public FanModeController(Attribute attribute)
     {
+        attr = attribute;
         pusher = new AttributePusher();
         puller = new AttributePuller();
-        attr = attrCore;
     }
     
     @Override
     public void reset()
     {
-        pusher.pushAttribute(attr.cmdNameProperty().getValue(), "0");
+        pusher.pushAttribute(attr, "0");
     }
-        
+    
+    @Override
+    public String getName()
+    {
+        return attr.cmdNameProperty().getValue();
+    }
+    
     @Override
     public Integer getCurrentValue()
     {
@@ -57,24 +70,24 @@ public class CoreController implements GPUController<Integer>
     @Override
     public Integer getMinValue()
     {
-        return -202;
+        return 0;
     }
 
     @Override
     public Integer getMaxVelue()
     {
-        return 1000;
+        return 1;
     }
 
     @Override
     public ArrayList<String> getOutput()
     {
         return pusher.getOutput();
-    } 
+    }
 
     @Override
     public void setValue(Integer newVal)
     {
-       pusher.pushAttribute(attr, String.valueOf(newVal));
+        pusher.pushAttribute(attr, String.valueOf(newVal));
     } 
 }

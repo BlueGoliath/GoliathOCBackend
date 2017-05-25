@@ -23,29 +23,23 @@
  */
 package goliath.ou.attribute;
 
-import goliath.ou.api.Importer;
+import goliath.ou.interfaces.Importer;
 import goliath.ou.utility.CsvReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author ty
- */
 public class AttributeImporter implements Importer<Attribute>
 {
-    private CsvReader reader;
-    private File file;
     private Attribute attr;
-    private String cmdName, displayName, unit;
-    private boolean readOnly, shouldUpdate;
 
-    public AttributeImporter(File attrFile)
+    @Override
+    public void importObject(File file)
     {
-        file = attrFile;
-        reader = null;
+        CsvReader reader = null;
+        String cmdName, displayName, unit;
+        boolean readOnly, shouldUpdate;
         
         try
         {
@@ -53,32 +47,22 @@ public class AttributeImporter implements Importer<Attribute>
         }
         catch (FileNotFoundException ex)
         {
+            System.out.println("Unable to read attribute file " + file.getName());
             Logger.getLogger(AttributeImporter.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        cmdName = reader.getKeyValues("CmdName").get(0);
+        displayName = reader.getKeyValues("DisplayName").get(0);
+        unit = reader.getKeyValues("Measurement").get(0);
+        
+        readOnly = Boolean.parseBoolean(reader.getKeyValues("ReadOnly").get(0));
+        shouldUpdate = Boolean.parseBoolean(reader.getKeyValues("ShouldUpdate").get(0));
+        
+        attr = new Attribute(cmdName, displayName, unit, readOnly, shouldUpdate);
     }
     
     @Override
-    public void readFile()
-    {
-        cmdName = reader.getKeyValues("cmdName").get(0);
-        displayName = reader.getKeyValues("displayName").get(0);
-        unit = reader.getKeyValues("unit").get(0);
-        
-        readOnly = Boolean.parseBoolean(reader.getKeyValues("readOnly").get(0));
-        shouldUpdate = Boolean.parseBoolean(reader.getKeyValues("shouldUpdate").get(0));
-    }
-    @Override
-    public void createObject()
-    {
-        attr = new Attribute(cmdName, displayName, unit, readOnly, shouldUpdate);
-    }
-    @Override
-    public File getFile()
-    {
-        return file;
-    }
-    @Override
-    public Attribute getImportedData()
+    public Attribute getImportedObject()
     {
         return attr;
     }

@@ -28,51 +28,78 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author ty
+
+ @author ty
  */
 public class AttributeUpdater
 {
-    private final ArrayList<Attribute> attributes;
     private final AttributePuller puller;
-    
-    public AttributeUpdater(ArrayList<Attribute> atts)
+    private long updateDelay;
+
+    public AttributeUpdater()
     {
-        attributes = atts;
         puller = new AttributePuller();
+        updateDelay = 0;
     }
-    public void updateAll(boolean ignoreShouldUpdate)
-    {  
+    public long getUpdateDelay()
+    {
+        return updateDelay;
+    }
+    public void setUpdateDelay(long delay)
+    {
+        updateDelay = delay;
+    }
+    public void update(Attribute attr)
+    {
+        String tmpVal = attr.cmdValueProperty().getValue();
+        attr.setCmdValue(puller.getAttributeValue(attr.cmdNameProperty().getValue()).get(0));
+
+        if (!attr.cmdValueProperty().getValue().equals(tmpVal))
+        {
+            switch (attr.cmdNameProperty().getValue())
+            {
+                case "GPUOverVoltageOffset":
+                case "GPUCurrentCoreVoltage":
+                    attr.setDisplayValue(Integer.parseInt(attr.cmdValueProperty().getValue()) / 1000 + " " + attr.getMeasurement());
+                    break;
+
+                default:
+                    attr.setDisplayValue(attr.cmdValueProperty().getValue() + " " + attr.getMeasurement());
+                    break;
+            }
+        }
+    }
+
+    public void updateAll(ArrayList<Attribute> attrs, boolean useDelay)
+    {
         String tmpVal;
         
-        for(int i = 0; i < attributes.size(); i++)
+        for (int i = 0; i < attrs.size(); i++)
         {
-            if(ignoreShouldUpdate || attributes.get(i).getShouldUpdate())
+            tmpVal = attrs.get(i).cmdValueProperty().getValue();
+            attrs.get(i).setCmdValue(puller.getAttributeValue(attrs.get(i).cmdNameProperty().getValue()).get(0));
+            if (!attrs.get(i).cmdValueProperty().getValue().equals(tmpVal))
             {
-                tmpVal = attributes.get(i).cmdValueProperty().getValue();
-                attributes.get(i).setValue(puller.getAttributeValue(attributes.get(i).cmdNameProperty().getValue()).get(0));
-                
-                if(!attributes.get(i).cmdValueProperty().getValue().equals(tmpVal))
+                switch (attrs.get(i).cmdNameProperty().getValue())
                 {
-                    switch(attributes.get(i).cmdNameProperty().getValue())
-                    {
-                        case "GPUOverVoltageOffset":
-                        case "GPUCurrentCoreVoltage":
-                            attributes.get(i).setDisplayValue(Integer.parseInt(attributes.get(i).cmdValueProperty().getValue())/1000 + " " + attributes.get(i).getMeasurement());
-                            break;
-                            
-                        default:
-                            attributes.get(i).setDisplayValue(attributes.get(i).cmdValueProperty().getValue() + " " + attributes.get(i).getMeasurement());
-                            break;
-                    }
+                    case "GPUOverVoltageOffset":
+                    case "GPUCurrentCoreVoltage":
+                        attrs.get(i).setDisplayValue(Integer.parseInt(attrs.get(i).cmdValueProperty().getValue()) / 1000 + " " + attrs.get(i).getMeasurement());
+                        break;
+
+                    default:
+                        attrs.get(i).setDisplayValue(attrs.get(i).cmdValueProperty().getValue() + " " + attrs.get(i).getMeasurement());
+                        break;
                 }
-                try
-                {
-                    Thread.sleep(175);
-                } catch (InterruptedException ex)
-                {
-                    Logger.getLogger(AttributeUpdater.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            }
+            try
+            {
+                if(useDelay)
+                    Thread.sleep(updateDelay);
+            }
+            catch (InterruptedException ex)
+            {
+                Logger.getLogger(AttributeUpdater.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

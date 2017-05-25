@@ -61,6 +61,8 @@ public class AttributePusher
             System.out.println("Failed to push Nvidia attribute " + attr.cmdNameProperty().getValue());
         }
         
+        shell.waitForExit();
+        
         while(shell.getCommandReader().hasNextLine())
             output.add(shell.getCommandReader().nextLine());
     }

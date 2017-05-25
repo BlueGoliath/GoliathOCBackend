@@ -31,19 +31,10 @@ import java.util.logging.Logger;
 
 public class GoliathRunnable implements Runnable
 {
-    private final Class objectClass;
     private final Object object;
     private final Method objectMethod;
-            
-    public GoliathRunnable(Class objClass, Object obj, Method objMethod)
-    {
-        objectClass = objClass;
-        object = obj;
-        objectMethod = objMethod;
-    }
 
     public GoliathRunnable(Object obj, Method objMethod) {
-        objectClass = obj.getClass();
         object = obj;
         objectMethod = objMethod;
     }
@@ -53,7 +44,7 @@ public class GoliathRunnable implements Runnable
     {
         try
         {
-            objectClass.getDeclaredMethod(objectMethod.getName()).invoke(object);
+            object.getClass().getDeclaredMethod(objectMethod.getName()).invoke(object);
         }
         catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
         {

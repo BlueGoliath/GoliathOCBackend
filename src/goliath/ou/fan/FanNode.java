@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Ty Young.
@@ -21,18 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package goliath.ou.api;
+package goliath.ou.fan;
 
-import java.io.File;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
- *
- * @author ty
+
+ @author Ty Young
  */
-public interface Importer<T>
+public class FanNode
 {
-    public void readFile();
-    public void createObject();
-    public File getFile();
-    public T getImportedData();
+    private final IntegerProperty c, p;
+    
+    public FanNode(int cTemp, int pSpeed)
+    {
+        c = new SimpleIntegerProperty();
+        p = new SimpleIntegerProperty();
+        
+        c.set(cTemp);
+        p.set(pSpeed);
+    }
+    public IntegerProperty tempProperty()
+    {
+        return c;
+    }
+    public IntegerProperty speedProperty()
+    {
+        return p;
+    }
 }

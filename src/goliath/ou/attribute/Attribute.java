@@ -23,6 +23,7 @@
  */
 package goliath.ou.attribute;
 
+import goliath.ou.interfaces.DisplayStringConverter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -39,6 +40,7 @@ public class Attribute
     private final String measurement;
     private final boolean readOnly;
     private final boolean alwaysUpdate;
+    private DisplayStringConverter converter;
     
     
     public Attribute(String cmd, String display, String rawUnitType, boolean readOnlyBool, boolean shouldBeUpdated)
@@ -89,6 +91,10 @@ public class Attribute
     {
         return alwaysUpdate;
     }
+    public DisplayStringConverter getDisplayStringConverter()
+    {
+        return converter;
+    }
     public void appendCmdName(String name)
     {
         cmdName.set(cmdName.get() + name);
@@ -97,13 +103,17 @@ public class Attribute
     {
         displayValue.set(str);
     }
-    public void setValue(String val)
+    public void setCmdValue(String val)
     {
         cmdValue.set(val);
     }
     public void setDisplayName(String str)
     {
         displayName.set(str);
+    }
+    public void setDisplayValueConverter(DisplayStringConverter conv)
+    {
+        converter = conv;
     }
     @Override
     public String toString()

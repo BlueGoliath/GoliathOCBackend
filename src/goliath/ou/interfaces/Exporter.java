@@ -21,17 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package goliath.ou.api;
+package goliath.ou.interfaces;
 
 import java.io.File;
 
-/**
- *
- * @author ty
- */
 public interface Exporter<T>
 {
-    public void export();
+    public void exportObject(T object);
     public File getExportedObjectFile();
-    public void setObjectToExport(T object);
 }

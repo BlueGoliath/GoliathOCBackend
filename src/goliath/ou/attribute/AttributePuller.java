@@ -26,13 +26,7 @@ package goliath.ou.attribute;
 import goliath.io.Terminal;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author ty
- */
 public class AttributePuller
 {
     private Terminal shell;
@@ -48,7 +42,7 @@ public class AttributePuller
         shell = new Terminal();
         
         cmd.append("nvidia-settings -t -q ");
-        cmd.append(attr.cmdNameProperty().toString());
+        cmd.append(attr.cmdNameProperty().getValue());
         
         shell.setCommand(cmd.toString());
         
@@ -87,6 +81,8 @@ public class AttributePuller
             System.out.println("Failed to get Nvidia attribute " + attr);
         }
 
+        shell.waitForExit();
+        
         while(shell.getCommandReader().hasNextLine())
             values.add(shell.getCommandReader().nextLine());
        

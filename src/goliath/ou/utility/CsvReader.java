@@ -56,7 +56,11 @@ public class CsvReader
             if(tmp.length != 0)
             {
                 keys.add(tmp[0]);
-                values.add(tmp[1]);
+                
+                if(tmp.length == 1)
+                    values.add(null);
+                else
+                    values.add(tmp[1]);
             }
         }
     }

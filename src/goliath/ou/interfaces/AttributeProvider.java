@@ -21,16 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package goliath.ou.api;
+package goliath.ou.interfaces;
 
 import java.util.ArrayList;
 
-public interface GPUController<T>
+/**
+
+ @author ty
+ */
+public interface AttributeProvider
 {
-    public void reset();
-    public T getCurrentValue();
-    public T getMinValue();
-    public T getMaxVelue();
-    public ArrayList<String> getOutput();
-    public void setValue(T newVal);
+    public String getGetterCmd();
+    public String getSetterCmd();
+    public ArrayList<String> getAttributes();
+    public boolean shouldPull();
 }

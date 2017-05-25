@@ -31,49 +31,55 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Reads and parses fan profile configs into FanProfile objects
- * @author ty
+ Reads and parses fan profile configs into FanProfile objects
+
+ @author ty
  */
 public class FanProfileLoader
 {
     private final File[] configs;
     private final ArrayList<FanProfile> profiles;
     private CsvReader reader;
-    
+
     public FanProfileLoader(File[] files)
     {
         configs = files;
         profiles = new ArrayList<>();
     }
+
     public void loadProfiles()
     {
         FanProfile profile;
         ArrayList<String> tempValues;
-        
-        for(int i = 0; i < configs.length; i++)
+
+        for (int i = 0; i < configs.length; i++)
         {
             try
             {
                 reader = new CsvReader(configs[i]);
-            }
-            catch (FileNotFoundException ex)
+            } catch (FileNotFoundException ex)
             {
                 Logger.getLogger(FanProfileLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             profile = new FanProfile(configs[i]);
             profile.setName(reader.getKeyValues("display_name").get(0));
             profile.setUpdateDelay(Integer.parseInt(reader.getKeyValues("update_speed").get(0)));
             profile.setUseSmoothTrans(Boolean.valueOf(reader.getKeyValues("smooth").get(0)));
-            
-            tempValues = reader.getKeyValues("node");
-            
-            for(int k = 0; k < tempValues.size(); k++)
-                profile.addValue(Integer.parseInt(tempValues.get(k)));  
-            
+
+
+            for (int l = 5; l < 100; l++)
+            {
+                tempValues = reader.getKeyValues("node_" + l);
+                
+                if (!tempValues.isEmpty())
+                    profile.addNode(l, Integer.parseInt(tempValues.get(0)));
+            }
+
             profiles.add(profile);
         }
     }
+
     public ArrayList<FanProfile> getLoadedProfiles()
     {
         return profiles;

@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Ty Young.
@@ -23,60 +23,57 @@
  */
 package goliath.ou.controller;
 
-import goliath.ou.api.GPUController;
 import goliath.ou.attribute.Attribute;
 import goliath.ou.attribute.AttributePuller;
 import goliath.ou.attribute.AttributePusher;
+import goliath.ou.interfaces.GPUController;
 import java.util.ArrayList;
 
 /**
 
- @author ty
+ @author Ty Young
  */
-public class FanController implements GPUController<Integer>
+public class PowerMizerController implements GPUController<Integer>
 {
-    public final static int DRIVER = 0;
-    public final static int MANUAL = 1;
-    
     private final AttributePusher pusher;
     private final AttributePuller puller;
-    private final Attribute fanAttr, modeAttr;
+    private final Attribute attr;
     
-    public FanController(Attribute attrFan, Attribute attrFanMode)
+    public PowerMizerController(Attribute attrPM)
     {
         pusher = new AttributePusher();
         puller = new AttributePuller();
-        fanAttr = attrFan;
-        modeAttr = attrFanMode;
-    }
- 
-    @Override
-    public void reset()
-    {
-        pusher.pushAttribute(fanAttr, "0");
-    }
-
-    public int getFanMode()
-    {
-        return Integer.parseInt(puller.getAttributeValue(modeAttr).get(0));
+        attr = attrPM;
     }
     
     @Override
+    public void reset()
+    {
+        pusher.pushAttribute(attr, "0");
+    }
+
+    @Override
+    public String getName()
+    {
+        return "PowerMizer";
+    }
+
+    @Override
     public Integer getCurrentValue()
     {
-       return Integer.parseInt(puller.getAttributeValue(fanAttr).get(0));
+        return Integer.parseInt(puller.getAttributeValue(attr).get(0));
     }
 
     @Override
     public Integer getMinValue()
     {
-        return -1000;
+        return 0;
     }
 
     @Override
     public Integer getMaxVelue()
     {
-        return 7010;
+        return 2;
     }
 
     @Override
@@ -84,15 +81,10 @@ public class FanController implements GPUController<Integer>
     {
         return pusher.getOutput();
     }
-    
+
     @Override
     public void setValue(Integer newVal)
     {
-        pusher.pushAttribute(fanAttr, String.valueOf(newVal));
-    }
-    
-    public void setFanMode(int mode)
-    {
-        pusher.pushAttribute(modeAttr, String.valueOf(mode));
+        pusher.pushAttribute(attr, String.valueOf(newVal));
     }
 }

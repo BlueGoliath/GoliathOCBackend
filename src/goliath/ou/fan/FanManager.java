@@ -23,7 +23,11 @@
  */
 package goliath.ou.fan;
 
-import goliath.ou.controller.FanController;
+import goliath.ou.attribute.Attribute;
+import goliath.ou.attribute.AttributePuller;
+import java.util.ArrayList;
+import goliath.ou.controller.FanModeController;
+import goliath.ou.controller.FanSpeedController;
 
 /**
  *
@@ -31,43 +35,39 @@ import goliath.ou.controller.FanController;
  */
 public class FanManager
 {
-    private final FanController fan;
-    private final int[] tempRange;
+    private final FanSpeedController fan;
+    private final FanModeController mode;
+    private final ArrayList<Integer> tempRange;
+    private final Attribute temp;
+    private final AttributePuller puller;
     private FanProfile currentProfile;
     
-    public FanManager(FanController fanCont)
+    public FanManager(FanSpeedController fanCont, FanModeController modeCont, Attribute fTemp)
     {
         fan = fanCont;
+        mode = modeCont;
         currentProfile = null;
+        temp = fTemp;
+        puller = new AttributePuller();
         
-        tempRange = new int[10];
+        tempRange = new ArrayList<>();
         
-        tempRange[0] = 35;
-        tempRange[1] = 40;
-        tempRange[2] = 45;
-        tempRange[3] = 50;
-        tempRange[4] = 55;
-        tempRange[5] = 60;
-        tempRange[6] = 65;
-        tempRange[7] = 70;
-        tempRange[8] = 75;
-        tempRange[9] = 80; 
     }
     public void updateFanSpeed()
     {
-        int currentTemp = fan.getCurrentValue();
+        int currentTemp = Integer.parseInt(puller.getAttributeValue(temp).get(0));
 
-        if(currentTemp <= tempRange[0])
-            fan.setValue(currentProfile.getValues().get(0));
-        else if(currentTemp >= tempRange[9])
-            fan.setValue(currentProfile.getValues().get(9));
+        if(currentTemp <= tempRange.get(0))
+            fan.setValue(currentProfile.getNodes().get(0).speedProperty().intValue());
+        else if(currentTemp >= tempRange.get(currentProfile.getNodes().size()-1))
+            fan.setValue(currentProfile.getNodes().get(currentProfile.getNodes().size()-1).speedProperty().intValue());
         else
         {
-            for(int i = 1; i < tempRange.length-1; i++)
+            for(int i = 1; i < tempRange.size()-1; i++)
             {
-                if(isWithinRange(currentTemp, tempRange[i-1], tempRange[i+1]))
+                if(isWithinRange(currentTemp, tempRange.get(i-1), tempRange.get(i+1)))
                 {
-                   fan.setValue(currentProfile.getValues().get(i));
+                   fan.setValue(currentProfile.getNodes().get(i).speedProperty().intValue());
                    break;
                 }
             }
@@ -80,6 +80,18 @@ public class FanManager
     public void setActiveProfile(FanProfile profile)
     {
         currentProfile = profile;
+        
+        tempRange.clear();
+        
+        for(int i = 0; i < profile.getNodes().size(); i++)
+            tempRange.add(profile.getNodes().get(i).tempProperty().getValue());
+    }
+    public void setFanState(int state)
+    {
+        if(state == 0)
+            mode.setValue(FanModeController.DRIVER_CONTROLLED);
+        else
+            mode.setValue(FanModeController.MANUALLY_CONTROLLED);
     }
     private boolean isWithinRange(int a, int b, int c)
     {
@@ -87,13 +99,4 @@ public class FanManager
             return true;
         return false;
     }
-
-    public void setFanState(int state)
-    {
-        if(state == 0)
-            fan.setFanMode(FanController.DRIVER);
-        else
-            fan.setFanMode(FanController.MANUAL);
-    }
-
 }

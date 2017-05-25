@@ -21,14 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package goliath.ou.utility;
+package goliath.ou.interfaces;
 
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 
-public class GoliathThread extends Thread
-{   
-    public GoliathThread(Object obj, Method objMethod)
-    {
-        super(new GoliathRunnable(obj, objMethod));
-    }
+public interface GPUController<T>
+{
+    public void reset();
+    public String getName();
+    public T getCurrentValue();
+    public T getMinValue();
+    public T getMaxVelue();
+    public ArrayList<String> getOutput();
+    public void setValue(T newVal);
 }

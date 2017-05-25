@@ -23,62 +23,95 @@
  */
 package goliath.ou.controller;
 
-import goliath.ou.api.GPUController;
-import goliath.ou.attribute.Attribute;
-import goliath.ou.attribute.AttributePuller;
-import goliath.ou.attribute.AttributePusher;
+import goliath.ou.interfaces.GPUController;
+import goliath.ou.power.PowerLimitParser;
+import goliath.io.Terminal;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
 
  @author ty
  */
-public class VoltageController implements GPUController<Integer>
+public class PowerLimitController implements GPUController<Integer>
 {
-    private final AttributePusher pusher;
-    private final AttributePuller puller;
-    private final Attribute voltAttr;
+    private final Terminal shell;
+    private final int min;
+    private final int max;
+    private CharSequence password;
     
-    public VoltageController(Attribute attrVoltage)
+    public PowerLimitController()
     {
-        pusher = new AttributePusher();
-        puller = new AttributePuller();
-        voltAttr = attrVoltage;
+        PowerLimitParser parser = new PowerLimitParser();
+        shell = new Terminal();
+        
+        parser.beginParse();
+        
+        min = parser.getMinPowerLimit();
+        max = parser.getMaxPowerLimit();
     }
-
+            
+    @Override
+    public String getName()
+    {
+        return "PowerLimit";
+    }
+    
     @Override
     public void reset()
     {
-        pusher.pushAttribute(voltAttr, "0");
+        // no way to get default value yet.
     }
-    
+
     @Override
     public Integer getCurrentValue()
     {
-       return Integer.parseInt(puller.getAttributeValue(voltAttr).get(0));
+        return null;
     }
 
     @Override
     public Integer getMinValue()
     {
-        return 0;
+        return min;
     }
 
     @Override
     public Integer getMaxVelue()
     {
-        return 100;
+        return max;
     }
 
     @Override
     public ArrayList<String> getOutput()
     {
-        return pusher.getOutput();
+        ArrayList<String> output = new ArrayList<>();
+        
+        while(shell.getCommandReader().hasNextLine())
+            output.add(shell.getCommandReader().nextLine());
+        
+        return output;
     }
-    
+    public void setPassword(CharSequence psw)
+    {
+        password = psw;
+    }
     @Override
     public void setValue(Integer newVal)
     {
-        pusher.pushAttribute(voltAttr, String.valueOf(newVal));
+        shell.setCommand("sudo -u root -S nvidia-smi -pl " + newVal);
+        
+        try
+        {
+            shell.startCommand();
+        }
+        catch (IOException ex)
+        {
+            System.out.println("Failed to set new power limit value " + newVal);
+        }
+        
+        shell.println(password.toString() + "\n");
+        password = null;
+        System.gc();
     }
+    
 }

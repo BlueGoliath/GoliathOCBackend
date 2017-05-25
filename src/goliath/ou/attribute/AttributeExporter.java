@@ -23,40 +23,73 @@
  */
 package goliath.ou.attribute;
 
-import goliath.ou.api.Exporter;
+import goliath.ou.interfaces.Exporter;
 import goliath.ou.utility.CsvWriter;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author ty
- */
 public class AttributeExporter implements Exporter<Attribute>
 {
-    private Attribute attrToExport;
     private CsvWriter writer;
-    private File file;
+    private File file, directory;
     
     
-    public AttributeExporter(Attribute attr)
+    public AttributeExporter(File attrExportFolder)
+    {   
+        directory = attrExportFolder;
+    }
+    
+    @Override
+    public void exportObject(Attribute object)
     {
+        if(!directory.exists())
+           directory.mkdir();
         
-    }
-    @Override
-    public void export()
-    {
+        file = new File(directory.getAbsolutePath() + "/" + object.cmdNameProperty().getValue() + ".csv"); 
         
+        if(!file.exists())
+        {
+            try
+            {
+                file.createNewFile();
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(AttributeExporter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        try
+        {
+            writer = new CsvWriter(file);
+
+            writer.addKeyValue("CmdName", object.cmdNameProperty().getValue());
+            writer.addKeyValue("DisplayName", object.displayNameProperty().getValue());
+            writer.addKeyValue("Measurement", object.getMeasurement());
+            writer.addKeyValue("ReadOnly", String.valueOf(object.getReadOnly()));
+            writer.addKeyValue("ShouldUpdate", String.valueOf(object.getShouldUpdate()));
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(AttributeExporter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-
     @Override
-    public void setObjectToExport(Attribute object)
+    public File getExportedObjectFile()
     {
-        attrToExport = object;
+        return file;
     }
-
-    @Override
-    public File getExportedObjectFile() {
-        return null;
+    
+    public File getExportDirectory()
+    {
+        return directory;
+    }
+    
+    public void setExportDirectory(File dir)
+    {
+        directory = dir;
     }
 }

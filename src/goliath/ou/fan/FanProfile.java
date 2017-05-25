@@ -24,44 +24,64 @@
 package goliath.ou.fan;
 
 import java.io.File;
+import java.util.Comparator;
+import java.util.Collections;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import java.util.ArrayList;
 
-/**
- *
- * @author Owner
- */
 public class FanProfile extends File
 {
-    private String name;
-    private final ArrayList<Integer> values;
+    private final ArrayList<FanNode> nodes;
+    
+    private StringProperty name;
     private boolean useSmoothTrans;
     private long updateInterval;
+    private final NodeComparator nodeComp;
     
     public FanProfile(String filePath)
     {
         super(filePath);
-        name = "undefined";
+        name = new SimpleStringProperty();
+        name.set("null");
         useSmoothTrans = true;
         updateInterval = 1000;
         
-        values = new ArrayList<>();
+        nodes = new ArrayList<>();
+        nodeComp = new NodeComparator();
     }
     public FanProfile(File file)
     {
         super(file.getAbsolutePath());
-        name = "undefined";
+        name = new SimpleStringProperty();
+        name.set("null");
         useSmoothTrans = true;
         updateInterval = 1000;
         
-        values = new ArrayList<>();
+       nodes = new ArrayList<>();
+       nodeComp = new NodeComparator();
     }
-    public String getName()
+    public void addNode(int c, int p)
+    {
+        nodes.add(new FanNode(c, p));
+        Collections.sort(nodes, nodeComp);
+    }
+    public void addNode(FanNode node)
+    {
+        nodes.add(node);
+        Collections.sort(nodes, nodeComp);
+    }
+    public void reSortNodes()
+    {
+        Collections.sort(nodes, nodeComp);
+    }
+    public StringProperty nameProperty()
     {
         return name;
     }
-    public ArrayList<Integer> getValues()
+    public ArrayList<FanNode> getNodes()
     {
-        return values;
+        return nodes;
     }
     public boolean getUseSmoothTrans()
     {
@@ -71,13 +91,9 @@ public class FanProfile extends File
     {
         return updateInterval;
     }
-    public void updateProfileName(String profileName)
-    {
-        name = profileName;
-    }
     public void setName(String nm)
     {
-        name = nm;
+        name.set(nm);
     }
     public void setUseSmoothTrans(boolean use)
     {
@@ -87,13 +103,22 @@ public class FanProfile extends File
     {
         updateInterval = speed;
     }
-    public void addValue(Integer num)
-    {
-        values.add(num);
-    }
     @Override
     public String toString()
     {
-        return name;
+        return name.getValue();
+    }
+    private class NodeComparator implements Comparator<FanNode>
+    {
+        @Override
+        public int compare(FanNode t, FanNode t1)
+        {
+            if(t.tempProperty().intValue() < t1.tempProperty().intValue())
+                return -1;
+            else if(t.tempProperty().intValue() == t1.tempProperty().intValue())
+                return 0;
+            else
+                return 1;
+        }  
     }
 }

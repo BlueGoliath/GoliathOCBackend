@@ -21,18 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package goliath.ou.api;
+package goliath.ou.interfaces;
 
-import java.util.ArrayList;
+import java.io.File;
 
 /**
-
- @author ty
+ *
+ * @author ty
  */
-public interface AttributeProvider
+public interface Importer<T>
 {
-    public String getGetterCmd();
-    public String getSetterCmd();
-    public ArrayList<String> getAttributes();
-    public boolean shouldPull();
+    public void importObject(File file);
+    public T getImportedObject();
 }
