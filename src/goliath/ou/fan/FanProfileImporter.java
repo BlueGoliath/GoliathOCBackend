@@ -23,6 +23,7 @@
  */
 package goliath.ou.fan;
 
+import goliath.ou.interfaces.Importer;
 import goliath.ou.utility.CsvReader;
 import java.io.FileNotFoundException;
 import java.io.File;
@@ -30,58 +31,44 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- Reads and parses fan profile configs into FanProfile objects
-
- @author ty
- */
-public class FanProfileLoader
+public class FanProfileImporter implements Importer<FanProfile>
 {
-    private final File[] configs;
-    private final ArrayList<FanProfile> profiles;
-    private CsvReader reader;
-
-    public FanProfileLoader(File[] files)
+    private FanProfile profile;
+    
+    @Override
+    public void importObject(File file)
     {
-        configs = files;
-        profiles = new ArrayList<>();
-    }
-
-    public void loadProfiles()
-    {
-        FanProfile profile;
+        CsvReader reader = null;
         ArrayList<String> tempValues;
 
-        for (int i = 0; i < configs.length; i++)
+        try
         {
-            try
+            reader = new CsvReader(file);
+        }
+        catch (FileNotFoundException ex)
+        {
+            Logger.getLogger(FanProfileImporter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        profile = new FanProfile(file);
+        profile.setName(reader.getKeyValues("display_name").get(0));
+        profile.setUpdateDelay(Integer.parseInt(reader.getKeyValues("update_speed").get(0)));
+        profile.setUseSmoothTrans(Boolean.valueOf(reader.getKeyValues("smooth").get(0)));
+
+        for (int l = 5; l < 100; l++)
+        {
+            tempValues = reader.getKeyValues("node_" + l);
+
+            if (!tempValues.isEmpty())
             {
-                reader = new CsvReader(configs[i]);
-            } catch (FileNotFoundException ex)
-            {
-                Logger.getLogger(FanProfileLoader.class.getName()).log(Level.SEVERE, null, ex);
+                profile.addNode(l, Integer.parseInt(tempValues.get(0)));
             }
-
-            profile = new FanProfile(configs[i]);
-            profile.setName(reader.getKeyValues("display_name").get(0));
-            profile.setUpdateDelay(Integer.parseInt(reader.getKeyValues("update_speed").get(0)));
-            profile.setUseSmoothTrans(Boolean.valueOf(reader.getKeyValues("smooth").get(0)));
-
-
-            for (int l = 5; l < 100; l++)
-            {
-                tempValues = reader.getKeyValues("node_" + l);
-                
-                if (!tempValues.isEmpty())
-                    profile.addNode(l, Integer.parseInt(tempValues.get(0)));
-            }
-
-            profiles.add(profile);
         }
     }
 
-    public ArrayList<FanProfile> getLoadedProfiles()
+    @Override
+    public FanProfile getImportedObject()
     {
-        return profiles;
+        return profile;
     }
 }

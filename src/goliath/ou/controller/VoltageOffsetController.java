@@ -29,10 +29,6 @@ import goliath.ou.attribute.AttributePuller;
 import goliath.ou.attribute.AttributePusher;
 import java.util.ArrayList;
 
-/**
-
- @author ty
- */
 public class VoltageOffsetController implements GPUController<Integer>
 {
     private final AttributePusher pusher;
