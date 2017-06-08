@@ -27,6 +27,7 @@ import goliath.ou.interfaces.GPUController;
 import goliath.ou.attribute.Attribute;
 import goliath.ou.attribute.AttributePuller;
 import goliath.ou.attribute.AttributePusher;
+import goliath.ou.utility.MinMaxParser;
 import java.util.ArrayList;
 
 /**
@@ -38,12 +39,22 @@ public class MemoryOffsetController implements GPUController<Integer>
     private final AttributePusher pusher;
     private final AttributePuller puller;
     private final Attribute attr;
+    private final int min, max;
     
     public MemoryOffsetController(Attribute attrMemory)
     {
+        MinMaxParser parser;
+        
         pusher = new AttributePusher();
         puller = new AttributePuller();
         attr = attrMemory;
+        
+        this.setValue(9999999);
+        
+        parser = new MinMaxParser(this.getOutput().get(1) + this.getOutput().get(2), 0, 0);
+        
+        min = parser.getMin();
+        max = parser.getMax();
     }
     
     @Override
@@ -67,13 +78,13 @@ public class MemoryOffsetController implements GPUController<Integer>
     @Override
     public Integer getMinValue()
     {
-        return -1000;
+        return min;
     }
 
     @Override
     public Integer getMaxVelue()
     {
-        return 7010;
+        return max;
     }
 
     @Override
@@ -86,5 +97,11 @@ public class MemoryOffsetController implements GPUController<Integer>
     public void setValue(Integer newVal)
     {
         pusher.pushAttribute(attr, String.valueOf(newVal));
+    }
+
+    @Override
+    public boolean isWorking()
+    {
+        return true;
     }
 }

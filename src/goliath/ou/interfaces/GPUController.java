@@ -33,5 +33,6 @@ public interface GPUController<T>
     public T getMinValue();
     public T getMaxVelue();
     public ArrayList<String> getOutput();
+    public boolean isWorking();
     public void setValue(T newVal);
 }

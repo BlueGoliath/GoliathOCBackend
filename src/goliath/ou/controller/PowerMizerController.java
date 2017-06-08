@@ -87,4 +87,10 @@ public class PowerMizerController implements GPUController<Integer>
     {
         pusher.pushAttribute(attr, String.valueOf(newVal));
     }
+
+    @Override
+    public boolean isWorking()
+    {
+        return true;
+    }
 }

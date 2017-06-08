@@ -24,39 +24,59 @@
 package goliath.ou.controller;
 
 import goliath.ou.interfaces.GPUController;
-import goliath.ou.power.PowerLimitParser;
 import goliath.io.Terminal;
+import goliath.ou.utility.MinMaxParser;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
-
- @author ty
- */
 public class PowerLimitController implements GPUController<Integer>
 {
     private final Terminal shell;
-    private final int min;
-    private final int max;
+    private int min;
+    private int max;
+    private boolean working;
     private CharSequence password;
-    
+
     public PowerLimitController()
     {
-        PowerLimitParser parser = new PowerLimitParser();
+        MinMaxParser parser;
+
         shell = new Terminal();
-        
-        parser.beginParse();
-        
-        min = parser.getMinPowerLimit();
-        max = parser.getMaxPowerLimit();
+        shell.setCommand("nvidia-smi --power-limit=99999999");
+
+        try
+        {
+            shell.startCommand();
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(PowerLimitController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        String nextLine = shell.getCommandReader().nextLine();
+
+        if(nextLine.contains("is not supported for GPU"))
+        {
+            working = false;
+        }
+        else
+        {
+            working = true;
+            parser = new MinMaxParser(nextLine, 2, 1);
+
+            min = parser.getMin();
+            max = parser.getMax();
+        }
     }
-            
+
     @Override
     public String getName()
     {
         return "PowerLimit";
     }
-    
+
     @Override
     public void reset()
     {
@@ -85,21 +105,23 @@ public class PowerLimitController implements GPUController<Integer>
     public ArrayList<String> getOutput()
     {
         ArrayList<String> output = new ArrayList<>();
-        
-        while(shell.getCommandReader().hasNextLine())
+
+        while (shell.getCommandReader().hasNextLine())
             output.add(shell.getCommandReader().nextLine());
-        
+
         return output;
     }
+
     public void setPassword(CharSequence psw)
     {
         password = psw;
     }
+
     @Override
     public void setValue(Integer newVal)
     {
         shell.setCommand("sudo -u root -S nvidia-smi -pl " + newVal);
-        
+
         try
         {
             shell.startCommand();
@@ -108,10 +130,16 @@ public class PowerLimitController implements GPUController<Integer>
         {
             System.out.println("Failed to set new power limit value " + newVal);
         }
-        
+
         shell.println(password.toString() + "\n");
         password = null;
         System.gc();
     }
-    
+
+    @Override
+    public boolean isWorking()
+    {
+        return working;
+    }
+
 }

@@ -83,4 +83,10 @@ public class VoltageOffsetController implements GPUController<Integer>
     {
         pusher.pushAttribute(voltAttr, String.valueOf(newVal));
     }
+
+    @Override
+    public boolean isWorking()
+    {
+        return true;
+    }
 }

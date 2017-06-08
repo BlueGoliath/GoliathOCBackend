@@ -27,6 +27,7 @@ import goliath.ou.interfaces.GPUController;
 import goliath.ou.attribute.Attribute;
 import goliath.ou.attribute.AttributePuller;
 import goliath.ou.attribute.AttributePusher;
+import goliath.ou.utility.MinMaxParser;
 import java.util.ArrayList;
 
 public class CoreOffsetController implements GPUController<Integer>
@@ -34,12 +35,25 @@ public class CoreOffsetController implements GPUController<Integer>
     private final AttributePusher pusher;
     private final AttributePuller puller;
     private final Attribute attr;
+    private final int min, max;
     
     public CoreOffsetController(Attribute attrCore)
     {
+        MinMaxParser parser;
+        String str;
+        
         pusher = new AttributePusher();
         puller = new AttributePuller();
         attr = attrCore;
+        
+        this.setValue(9999999);
+        
+        str = this.getOutput().get(1) + this.getOutput().get(2);
+        
+        parser = new MinMaxParser(str, 0, 0);
+        
+        min = parser.getMin();
+        max = parser.getMax();
     }
     
     @Override
@@ -61,13 +75,13 @@ public class CoreOffsetController implements GPUController<Integer>
     @Override
     public Integer getMinValue()
     {
-        return -202;
+        return min;
     }
 
     @Override
     public Integer getMaxVelue()
     {
-        return 1000;
+        return max;
     }
 
     @Override
@@ -81,4 +95,10 @@ public class CoreOffsetController implements GPUController<Integer>
     {
        pusher.pushAttribute(attr, String.valueOf(newVal));
     } 
+
+    @Override
+    public boolean isWorking()
+    {
+        return true;
+    }
 }

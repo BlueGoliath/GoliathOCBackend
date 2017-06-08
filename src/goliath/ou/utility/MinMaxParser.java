@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 Ty Young.
@@ -21,67 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package goliath.ou.power;
+package goliath.ou.utility;
 
-import goliath.ou.attribute.AttributePuller;
-import goliath.io.Terminal;
-import java.io.IOException;
-
-/**
-
- @author ty
- */
-public class PowerLimitParser
+public class MinMaxParser
 {
-    private final Terminal shell;
-    private int min;
-    private int max;
+    private char[] chars;
+    private final int min;
+    private final int max;
     
-    public PowerLimitParser()
+    public MinMaxParser(String str, int ignoreMin, int ignoreMax)
     {
-        shell = new Terminal();
+        chars = str.toCharArray();
         
+        for(int i = 0; i < ignoreMin; i++)
+            findValue();
+         
+        min = findValue();
+         
+        for(int i = 0; i < ignoreMax; i++)
+            findValue();
+         
+         max = findValue();
     }
-    public void beginParse()
+    private int findValue()
     {
-        String line;
-        
-        shell.setCommand("nvidia-smi --power-limit=99999999");
-        
-        try
+        String num = "";
+        boolean foundAValue = false;
+        for(int i = 0; i < chars.length; i++)
         {
-            shell.startCommand();
-        }
-        catch (IOException ex)
-        {
-            System.out.println("Failed to parse power limit values. Is the Nvidia driver installed?");
-        }
-        
-        line = shell.getCommandReader().nextLine();
-        
-        try
-        {
-            min = (int)Double.parseDouble(line.substring(86, 91));
-        }
-        catch(NumberFormatException e)
-        {
-            min = (int)Double.parseDouble(line.substring(86, 92));
+            if(Character.isDigit(chars[i]))
+            {
+                num += chars[i];
+                foundAValue = true;
+            }
+            else if(!Character.isDigit(chars[i]) && foundAValue)
+            {
+                if(chars[i-num.length()-1] == '-')
+                    num = '-' + num;
+                
+                chars = new String(chars, i, chars.length-i).toCharArray();
+                break;
+            }
         }
         
-        try
-        {
-            max = (int)Double.parseDouble(line.substring(98, 103));
-        }
-        catch(NumberFormatException e)
-        {
-            max = (int)Double.parseDouble(line.substring(98, 104));
-        } 
+        return Integer.parseInt(num);
     }
-    public int getMinPowerLimit()
+    public int getMin()
     {
         return min;
     }
-    public int getMaxPowerLimit()
+    public int getMax()
     {
         return max;
     }

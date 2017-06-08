@@ -87,4 +87,10 @@ public class FanSpeedController implements GPUController<Integer>
     {
         pusher.pushAttribute(fanAttr, String.valueOf(newVal));
     }
+
+    @Override
+    public boolean isWorking()
+    {
+        return true;
+    }
 }
