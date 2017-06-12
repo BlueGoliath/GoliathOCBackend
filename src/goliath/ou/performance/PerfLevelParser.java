@@ -40,7 +40,7 @@ public class PerfLevelParser
         levels = new ArrayList<>();
         puller = new AttributePuller();
     }
-    public ArrayList<PerformanceLevel> beginParse()
+    public void beginParse()
     {
         ArrayList<String> output = puller.getAttributeValue("GPUPerfModes");
         StringBuilder tmp = new StringBuilder();
@@ -102,6 +102,9 @@ public class PerfLevelParser
                     levels.remove(k);
             }        
         }
+    }
+    public ArrayList<PerformanceLevel> getPerformanceLevels()
+    {
         return levels;
     }
 }

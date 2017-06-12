@@ -29,10 +29,6 @@ import goliath.ou.attribute.AttributePusher;
 import goliath.ou.interfaces.GPUController;
 import java.util.ArrayList;
 
-/**
-
- @author Ty Young
- */
 public class FanModeController implements GPUController<Integer>
 {
     public static final int DRIVER_CONTROLLED = 0;
