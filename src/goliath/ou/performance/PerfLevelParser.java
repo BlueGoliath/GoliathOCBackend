@@ -26,10 +26,6 @@ package goliath.ou.performance;
 import goliath.ou.attribute.AttributePuller;
 import java.util.ArrayList;
 
-/**
- *
- * @author ty
- */
 public class PerfLevelParser
 {
     private final ArrayList<PerformanceLevel> levels;

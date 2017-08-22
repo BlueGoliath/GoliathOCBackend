@@ -23,12 +23,14 @@
  */
 package goliath.ou.fan;
 
+import goliath.ou.interfaces.CsvData;
 import java.io.File;
 import java.util.Comparator;
 import java.util.Collections;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FanProfile extends File
 {
@@ -38,28 +40,35 @@ public class FanProfile extends File
     private boolean useSmoothTrans;
     private long updateInterval;
     private final NodeComparator nodeComp;
+    private final HashMap<String, String> data;
     
     public FanProfile(String filePath)
     {
         super(filePath);
         name = new SimpleStringProperty();
-        name.set("null");
-        useSmoothTrans = true;
-        updateInterval = 1000;
         
         nodes = new ArrayList<>();
         nodeComp = new NodeComparator();
+        
+        data = new HashMap<>();
+        
+        data.put("display_name", name.getValue());
+        data.put("update_speed", String.valueOf(updateInterval));
+        data.put("smooth_speed", String.valueOf(useSmoothTrans));
     }
     public FanProfile(File file)
     {
-        super(file.getAbsolutePath());
-        name = new SimpleStringProperty();
-        name.set("null");
-        useSmoothTrans = true;
-        updateInterval = 1000;
+       super(file.getAbsolutePath());
+       name = new SimpleStringProperty();
         
        nodes = new ArrayList<>();
        nodeComp = new NodeComparator();
+       
+       data = new HashMap<>();
+        
+       data.put("display_name", name.getValue());
+       data.put("update_speed", String.valueOf(updateInterval));
+       data.put("smooth_speed", String.valueOf(useSmoothTrans));
     }
     public void addNode(int c, int p)
     {
@@ -120,5 +129,13 @@ public class FanProfile extends File
             else
                 return 1;
         }  
+    }
+    private class ProfileCsvData implements CsvData
+    {
+        @Override
+        public HashMap<String, String> getCsvData()
+        {
+            return null;
+        }
     }
 }

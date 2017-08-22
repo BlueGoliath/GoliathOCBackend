@@ -27,6 +27,8 @@ import goliath.ou.interfaces.GPUController;
 import goliath.ou.attribute.Attribute;
 import goliath.ou.attribute.AttributePuller;
 import goliath.ou.attribute.AttributePusher;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import java.util.ArrayList;
 
 /**
@@ -36,14 +38,17 @@ import java.util.ArrayList;
 public class FanSpeedController implements GPUController<Integer>
 {
     private final AttributePusher pusher;
-    private final AttributePuller puller;
     private final Attribute fanAttr;
+    private int speed;
+    
+    private final IntegerProperty speedProperty;
     
     public FanSpeedController(Attribute attrFan)
     {
         pusher = new AttributePusher();
-        puller = new AttributePuller();
         fanAttr = attrFan;
+        
+        speedProperty = new SimpleIntegerProperty();
     }
  
     @Override
@@ -61,7 +66,7 @@ public class FanSpeedController implements GPUController<Integer>
     @Override
     public Integer getCurrentValue()
     {
-        return Integer.parseInt(puller.getAttributeValue(fanAttr).get(0));
+        return speed;
     }
 
     @Override
@@ -86,11 +91,18 @@ public class FanSpeedController implements GPUController<Integer>
     public void setValue(Integer newVal)
     {
         pusher.pushAttribute(fanAttr, String.valueOf(newVal));
+        speed = newVal;
+        speedProperty.set(newVal);
     }
 
     @Override
     public boolean isWorking()
     {
         return true;
+    }
+    
+    public IntegerProperty speedProperty()
+    {
+        return speedProperty;
     }
 }

@@ -48,16 +48,4 @@ public class CsvWriter
         writer.write(key + "," + value + "\n");
         writer.flush();
     }
-    public void addKeyValueHashMap(HashMap<String,String> hash) throws IOException
-    {
-        for(int i = 0; i < hash.size(); i++)
-        {
-            writer.write(hash.keySet().toArray(new String[hash.size()])[i] + ",");
-        }
-    }
-    public void overwriteValue(String key, String value)
-    {
-        
-    }
-    
 }

@@ -40,7 +40,6 @@ public class CoreOffsetController implements GPUController<Integer>
     public CoreOffsetController(Attribute attrCore)
     {
         MinMaxParser parser;
-        String str;
         
         pusher = new AttributePusher();
         puller = new AttributePuller();
@@ -48,9 +47,7 @@ public class CoreOffsetController implements GPUController<Integer>
         
         this.setValue(9999999);
         
-        str = this.getOutput().get(1) + this.getOutput().get(2);
-        
-        parser = new MinMaxParser(str, 0, 0);
+        parser = new MinMaxParser(this.getOutput().get(1) + this.getOutput().get(2), 0, 0);
         
         min = parser.getMin();
         max = parser.getMax();

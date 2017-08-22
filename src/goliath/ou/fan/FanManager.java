@@ -29,10 +29,6 @@ import java.util.ArrayList;
 import goliath.ou.controller.FanModeController;
 import goliath.ou.controller.FanSpeedController;
 
-/**
- *
- * @author ty
- */
 public class FanManager
 {
     private final FanSpeedController fan;
@@ -49,9 +45,7 @@ public class FanManager
         currentProfile = null;
         temp = fTemp;
         puller = new AttributePuller();
-        
         tempRange = new ArrayList<>();
-        
     }
     public void updateFanSpeed()
     {

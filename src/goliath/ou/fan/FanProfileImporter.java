@@ -60,9 +60,7 @@ public class FanProfileImporter implements Importer<FanProfile>
             tempValues = reader.getKeyValues("node_" + l);
 
             if (!tempValues.isEmpty())
-            {
                 profile.addNode(l, Integer.parseInt(tempValues.get(0)));
-            }
         }
     }
 

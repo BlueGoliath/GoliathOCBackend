@@ -25,10 +25,6 @@ package goliath.ou.interfaces;
 
 import java.util.ArrayList;
 
-/**
-
- @author ty
- */
 public interface AttributeProvider
 {
     public String getGetterCmd();

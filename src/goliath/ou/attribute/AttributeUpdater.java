@@ -77,7 +77,17 @@ public class AttributeUpdater
         for (int i = 0; i < attrs.size(); i++)
         {
             tmpVal = attrs.get(i).cmdValueProperty().getValue();
-            attrs.get(i).setCmdValue(puller.getAttributeValue(attrs.get(i).cmdNameProperty().getValue()).get(0));
+            
+            try
+            {
+                attrs.get(i).setCmdValue(puller.getAttributeValue(attrs.get(i).cmdNameProperty().getValue()).get(0));
+            }
+            catch(IndexOutOfBoundsException e)
+            {
+                System.out.println("Failed to update attribute " + attrs.get(i).cmdNameProperty().getValue() + ".");
+                break;
+            }
+            
             if (!attrs.get(i).cmdValueProperty().getValue().equals(tmpVal))
             {
                 switch (attrs.get(i).cmdNameProperty().getValue())

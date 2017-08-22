@@ -25,10 +25,6 @@ package goliath.ou.interfaces;
 
 import java.io.File;
 
-/**
- *
- * @author ty
- */
 public interface Importer<T>
 {
     public void importObject(File file);

@@ -27,6 +27,7 @@ import goliath.ou.interfaces.GPUController;
 import goliath.ou.attribute.Attribute;
 import goliath.ou.attribute.AttributePuller;
 import goliath.ou.attribute.AttributePusher;
+import goliath.ou.utility.MinMaxParser;
 import java.util.ArrayList;
 
 public class VoltageOffsetController implements GPUController<Integer>
@@ -34,12 +35,21 @@ public class VoltageOffsetController implements GPUController<Integer>
     private final AttributePusher pusher;
     private final AttributePuller puller;
     private final Attribute voltAttr;
+    private final int min, max;
     
     public VoltageOffsetController(Attribute attrVoltage)
     {
+        MinMaxParser parser;
         pusher = new AttributePusher();
         puller = new AttributePuller();
         voltAttr = attrVoltage;
+        
+        this.setValue(100*10000);
+        
+        parser = new MinMaxParser(this.getOutput().get(1), 0, 0);
+        
+        min = parser.getMin() / 1000;
+        max = parser.getMax() / 1000;
     }
 
     @Override

@@ -21,29 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package goliath.ou.fan;
+package goliath.ou.interfaces;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import java.util.HashMap;
 
-public class FanNode
+public interface CsvData
 {
-    private final IntegerProperty c, p;
-    
-    public FanNode(int cTemp, int pSpeed)
-    {
-        c = new SimpleIntegerProperty();
-        p = new SimpleIntegerProperty();
-        
-        c.set(cTemp);
-        p.set(pSpeed);
-    }
-    public IntegerProperty tempProperty()
-    {
-        return c;
-    }
-    public IntegerProperty speedProperty()
-    {
-        return p;
-    }
+    public HashMap<String, String> getCsvData();
 }

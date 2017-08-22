@@ -21,29 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package goliath.ou.fan;
+package goliath.ou.utility;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class FanNode
+public class CsvUpdater
 {
-    private final IntegerProperty c, p;
+    private CsvReader reader;
+    private CsvWriter writer;
     
-    public FanNode(int cTemp, int pSpeed)
+    public CsvUpdater(File csv)
     {
-        c = new SimpleIntegerProperty();
-        p = new SimpleIntegerProperty();
+        try
+        {
+            reader = new CsvReader(csv);
+            writer = new CsvWriter(csv);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(CsvUpdater.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        c.set(cTemp);
-        p.set(pSpeed);
-    }
-    public IntegerProperty tempProperty()
-    {
-        return c;
-    }
-    public IntegerProperty speedProperty()
-    {
-        return p;
     }
 }
