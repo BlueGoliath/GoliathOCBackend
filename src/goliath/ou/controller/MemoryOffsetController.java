@@ -30,10 +30,6 @@ import goliath.ou.attribute.AttributePusher;
 import goliath.ou.utility.MinMaxParser;
 import java.util.ArrayList;
 
-/**
-
- @author ty
- */
 public class MemoryOffsetController implements GPUController<Integer>
 {
     private final AttributePusher pusher;
@@ -60,7 +56,7 @@ public class MemoryOffsetController implements GPUController<Integer>
     @Override
     public String getName()
     {
-        return attr.cmdNameProperty().getValue();
+        return "Memory Offset";
     }
     
     @Override
@@ -72,7 +68,7 @@ public class MemoryOffsetController implements GPUController<Integer>
     @Override
     public Integer getCurrentValue()
     {
-       return Integer.parseInt(puller.getAttributeValue(attr).get(0));
+       return Integer.parseInt(attr.cmdValueProperty().getValue());
     }
 
     @Override

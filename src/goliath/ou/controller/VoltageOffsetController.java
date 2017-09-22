@@ -33,7 +33,6 @@ import java.util.ArrayList;
 public class VoltageOffsetController implements GPUController<Integer>
 {
     private final AttributePusher pusher;
-    private final AttributePuller puller;
     private final Attribute voltAttr;
     private final int min, max;
     
@@ -41,7 +40,6 @@ public class VoltageOffsetController implements GPUController<Integer>
     {
         MinMaxParser parser;
         pusher = new AttributePusher();
-        puller = new AttributePuller();
         voltAttr = attrVoltage;
         
         this.setValue(100*10000);
@@ -61,25 +59,25 @@ public class VoltageOffsetController implements GPUController<Integer>
     @Override
     public String getName()
     {
-        return voltAttr.cmdNameProperty().getValue();
+        return "Voltage Offset";
     }
     
     @Override
     public Integer getCurrentValue()
     {
-       return Integer.parseInt(puller.getAttributeValue(voltAttr).get(0));
+        return Integer.parseInt(voltAttr.cmdValueProperty().getValue());
     }
 
     @Override
     public Integer getMinValue()
     {
-        return 0;
+        return min;
     }
 
     @Override
     public Integer getMaxVelue()
     {
-        return 100;
+        return max;
     }
 
     @Override

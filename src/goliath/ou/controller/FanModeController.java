@@ -24,7 +24,6 @@
 package goliath.ou.controller;
 
 import goliath.ou.attribute.Attribute;
-import goliath.ou.attribute.AttributePuller;
 import goliath.ou.attribute.AttributePusher;
 import goliath.ou.interfaces.GPUController;
 import java.util.ArrayList;
@@ -36,13 +35,11 @@ public class FanModeController implements GPUController<Integer>
     
     private final Attribute attr;
     private final AttributePusher pusher;
-    private final AttributePuller puller;
     
     public FanModeController(Attribute attribute)
     {
         attr = attribute;
         pusher = new AttributePusher();
-        puller = new AttributePuller();
     }
     
     @Override
@@ -54,13 +51,13 @@ public class FanModeController implements GPUController<Integer>
     @Override
     public String getName()
     {
-        return attr.cmdNameProperty().getValue();
+        return "Fan Mode";
     }
     
     @Override
     public Integer getCurrentValue()
     {
-        return Integer.parseInt(puller.getAttributeValue(attr).get(0));
+        return Integer.parseInt(attr.cmdValueProperty().getValue());
     }
 
     @Override

@@ -36,6 +36,7 @@ public class FanManager
     private final ArrayList<Integer> tempRange;
     private final Attribute temp;
     private final AttributePuller puller;
+    private int manualSpeed;
     private FanProfile currentProfile;
     
     public FanManager(FanSpeedController fanCont, FanModeController modeCont, Attribute fTemp)
@@ -46,6 +47,7 @@ public class FanManager
         temp = fTemp;
         puller = new AttributePuller();
         tempRange = new ArrayList<>();
+        manualSpeed = fan.getCurrentValue();
     }
     public void updateFanSpeed()
     {
@@ -71,6 +73,10 @@ public class FanManager
     {
         return currentProfile;
     }
+    public int getManaulSpeed()
+    {
+        return manualSpeed;
+    }
     public void setActiveProfile(FanProfile profile)
     {
         currentProfile = profile;
@@ -87,10 +93,13 @@ public class FanManager
         else
             mode.setValue(FanModeController.MANUALLY_CONTROLLED);
     }
+    public void setManualFanSpeed(int speed)
+    {
+        manualSpeed = speed;
+        fan.setValue(speed);
+    }
     private boolean isWithinRange(int a, int b, int c)
     {
-        if(a > b && a < c)
-            return true;
-        return false;
+        return a > b && a < c;
     }
 }

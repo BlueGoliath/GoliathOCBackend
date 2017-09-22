@@ -29,10 +29,6 @@ import goliath.ou.attribute.AttributePusher;
 import goliath.ou.interfaces.GPUController;
 import java.util.ArrayList;
 
-/**
-
- @author Ty Young
- */
 public class PowerMizerController implements GPUController<Integer>
 {
     private final AttributePusher pusher;
@@ -61,7 +57,7 @@ public class PowerMizerController implements GPUController<Integer>
     @Override
     public Integer getCurrentValue()
     {
-        return Integer.parseInt(puller.getAttributeValue(attr).get(0));
+        return Integer.parseInt(attr.cmdValueProperty().getValue());
     }
 
     @Override

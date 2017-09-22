@@ -74,7 +74,7 @@ public class PowerLimitController implements GPUController<Integer>
     @Override
     public String getName()
     {
-        return "PowerLimit";
+        return "Power Limit";
     }
 
     @Override

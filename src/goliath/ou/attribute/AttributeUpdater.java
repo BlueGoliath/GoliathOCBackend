@@ -27,10 +27,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
-
- @author ty
- */
 public class AttributeUpdater
 {
     private final AttributePuller puller;

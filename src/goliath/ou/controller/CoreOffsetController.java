@@ -61,12 +61,12 @@ public class CoreOffsetController implements GPUController<Integer>
     @Override
     public String getName()
     {
-        return attr.cmdNameProperty().getValue();
+        return "Core Offset";
     }
     @Override
     public Integer getCurrentValue()
     {
-        return Integer.parseInt(puller.getAttributeValue(attr).get(0));
+        return Integer.parseInt(attr.cmdValueProperty().getValue());
     }
 
     @Override
